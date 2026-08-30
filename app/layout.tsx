@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "NFC/QR Stands",
-  description: "Gestión de soportes físicos NFC + QR para restaurantes",
+  title: "Taply — Panel administrativo",
+  description: "Tap. Connect. Experience. Gestión de soportes NFC/QR para restaurantes.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -12,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body className="bg-slate-50 text-slate-900 antialiased">
+    <html lang="es" className={inter.variable}>
+      <body className="bg-surface text-ink antialiased font-sans">
         {children}
       </body>
     </html>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -28,10 +29,13 @@ export default function AdminNav() {
   }
 
   return (
-    <aside className="w-full md:w-56 md:min-h-screen bg-white border-r border-slate-200 flex md:flex-col">
-      <div className="px-5 py-5 hidden md:block">
-        <h2 className="font-semibold text-slate-900">NFC/QR Stands</h2>
-        <p className="text-xs text-slate-400">Panel administrativo</p>
+    <aside className="w-full md:w-60 md:min-h-screen bg-surface-alt border-r border-line flex md:flex-col">
+      <div className="px-5 py-5 hidden md:flex items-center gap-2.5">
+        <Image src="/icon.png" alt="Taply" width={30} height={30} className="shrink-0" />
+        <div className="leading-tight">
+          <p className="font-semibold text-ink tracking-tight text-sm">TAPLY</p>
+          <p className="text-[11px] text-ink-muted">Panel administrativo</p>
+        </div>
       </div>
 
       <nav className="flex md:flex-col flex-1 px-2 md:px-3 gap-1 py-2 md:py-0">
@@ -43,12 +47,15 @@ export default function AdminNav() {
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 active
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-slate-600 hover:bg-slate-100"
+                  ? "bg-brand-gradient-soft text-brand-700"
+                  : "text-ink-muted hover:bg-surface hover:text-ink"
               }`}
             >
+              {active && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 rounded-full bg-brand-gradient hidden md:block" />
+              )}
               <Icon className="w-4 h-4" />
               <span className="hidden sm:inline">{label}</span>
             </Link>
@@ -59,7 +66,7 @@ export default function AdminNav() {
       <div className="px-3 py-4 hidden md:block">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 w-full"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-ink-muted hover:bg-surface hover:text-ink w-full"
         >
           <LogOut className="w-4 h-4" />
           Cerrar sesión
