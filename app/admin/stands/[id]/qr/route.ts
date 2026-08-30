@@ -1,5 +1,6 @@
-import QRCode from "qrcode";
+import sharp from "sharp";
 import { createClient } from "@/lib/supabase/server";
+import { buildLabeledQrSvg } from "@/lib/qr";
 import { NextResponse } from "next/server";
 
 // Nota: esta ruta vive bajo /admin y por lo tanto queda protegida por el
@@ -14,8 +15,6 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const format = (searchParams.get("format") || "png").toLowerCase();
 
-  // Verificamos que el usuario tenga sesión (RLS ya lo exige, pero
-  // devolvemos un error claro si no).
   const supabase = await createClient();
   const {
     data: { user },
@@ -26,14 +25,9 @@ export async function GET(
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || new URL(request.url).origin;
   const targetUrl = `${baseUrl}/r/${id}?src=qr`;
+  const svg = await buildLabeledQrSvg(id, targetUrl);
 
   if (format === "svg") {
-    const svg = await QRCode.toString(targetUrl, {
-      type: "svg",
-      errorCorrectionLevel: "H",
-      margin: 2,
-      width: 1024,
-    });
     return new NextResponse(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
@@ -42,12 +36,7 @@ export async function GET(
     });
   }
 
-  const pngBuffer = await QRCode.toBuffer(targetUrl, {
-    type: "png",
-    errorCorrectionLevel: "H",
-    margin: 2,
-    width: 1024,
-  });
+  const pngBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
 
   return new NextResponse(new Uint8Array(pngBuffer), {
     headers: {

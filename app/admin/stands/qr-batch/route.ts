@@ -1,6 +1,6 @@
-import QRCode from "qrcode";
 import JSZip from "jszip";
 import { createClient } from "@/lib/supabase/server";
+import { buildLabeledQrSvg } from "@/lib/qr";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -22,12 +22,7 @@ export async function GET(request: Request) {
 
   for (const stand of stands) {
     const targetUrl = `${baseUrl}/r/${stand.id}?src=qr`;
-    const svg = await QRCode.toString(targetUrl, {
-      type: "svg",
-      errorCorrectionLevel: "H",
-      margin: 2,
-      width: 1024,
-    });
+    const svg = await buildLabeledQrSvg(stand.id, targetUrl);
     zip.file(`${stand.id}-qr.svg`, svg);
   }
 
